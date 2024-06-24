@@ -1,35 +1,33 @@
 {
-  "version": 1,
-  "disable_existing_loggers": false,
-  "formatters": {
-    "simple": {
-      "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-      "datefmt": "%Y-%m-%dT%H:%M:%S%z"
-    }
-  },
-  "handlers": {
-    "stderr": {
-      "class": "logging.StreamHandler",
-      "level": "NOTSET",
-      "formatter": "simple",
-      "stream": "ext://sys.stderr"
+    "version": 1,
+    "disable_existing_loggers": false,
+    "formatters": {
+        "simple": {
+            "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+            "datefmt": "%Y-%m-%dT%H:%M:%S%z"
+        }
     },
-    "file": {
-      "class": "logging.handlers.RotatingFileHandler",
-      "level": "DEBUG",
-      "filename": "logs/logs.log",
-      "maxBytes": 10000,
-      "backupCount": 3,
-      "formatter": "simple"
+    "handlers": {
+        "stderr": {
+            "class": "logging.StreamHandler",
+            "formatter": "simple",
+            "stream": "ext://sys.stderr"
+        },
+        "file": {
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": "logs/logs.log",
+            "maxBytes": 10000,
+            "backupCount": 5,
+            "formatter": "simple"
+        }
+    },
+    "loggers": {
+        "root": {
+            "level": "DEBUG",
+            "handlers": [
+                "stderr",
+                "file"
+            ]
+        }
     }
-  },
-  "loggers": {
-    "root": {
-      "level": "DEBUG",
-      "handlers": [
-        "stderr",
-        "file"
-      ]
-    }
-  }
 }
