@@ -1,11 +1,11 @@
 import logging
 import json
 import pathlib
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query, Depends
 from typing import Optional, Annotated
 from enum import Enum
 from logger.logger_config import setup_logging
-
+from fastapi.security import OAuth2PasswordBearer
 
 router = APIRouter()
 logger = logging.getLogger("log")
@@ -36,7 +36,10 @@ async def get_log_information():
     return log_config
 
 
-@router.put("/log_level")
+jwt_auth = OAuth2PasswordBearer(tokenUrl="/login", scheme_name="JWT")
+
+
+@router.put("/log_level", summary="Edit log config", dependencies=[Depends(jwt_auth)])
 async def set_log_config(
     log_level: LogLevel,
     maxBytes: Annotated[int, Query(title="Max bytes of log file", gt=0)] = 10000,
@@ -44,16 +47,9 @@ async def set_log_config(
 ):
     """set log config."""
     try:
-        list_log_level = ["NOTSET", "DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
-        if log_level not in list_log_level:
-            raise HTTPException(
-                status_code=400, detail=f"log level must in {list_log_level}"
-            )
         config = {}
         config_file = pathlib.Path("logger/logger_config.json")
-        with open(
-            config_file,
-        ) as f_in:
+        with open(config_file) as f_in:
             config = json.load(f_in)
 
         with open(config_file, "w") as f_write:
@@ -61,6 +57,7 @@ async def set_log_config(
             config["handlers"]["file"]["maxBytes"] = maxBytes
             config["handlers"]["file"]["backupCount"] = backupCount
             json.dump(config, f_write, indent=4)
+
         setup_logging()
         return "Update log level successfully!"
     except Exception as e:
