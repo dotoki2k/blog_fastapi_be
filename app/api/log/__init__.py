@@ -6,6 +6,7 @@ from typing import Optional, Annotated
 from enum import Enum
 from logger.logger_config import setup_logging
 from fastapi.security import OAuth2PasswordBearer
+from app.deps import get_current_user
 
 router = APIRouter()
 logger = logging.getLogger("log")
@@ -36,10 +37,12 @@ async def get_log_information():
     return log_config
 
 
-jwt_auth = OAuth2PasswordBearer(tokenUrl="/login", scheme_name="JWT")
+# jwt_auth = OAuth2PasswordBearer(tokenUrl="/login", scheme_name="JWT")
 
 
-@router.put("/log_level", summary="Edit log config", dependencies=[Depends(jwt_auth)])
+@router.put(
+    "/log_level", summary="Edit log config", dependencies=[Depends(get_current_user)]
+)
 async def set_log_config(
     log_level: LogLevel,
     maxBytes: Annotated[int, Query(title="Max bytes of log file", gt=0)] = 10000,

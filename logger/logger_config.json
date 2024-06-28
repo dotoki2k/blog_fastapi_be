@@ -16,14 +16,14 @@
         "file": {
             "class": "logging.handlers.RotatingFileHandler",
             "filename": "logs/logs.log",
-            "maxBytes": 30000,
+            "maxBytes": 10000,
             "backupCount": 5,
             "formatter": "simple"
         }
     },
     "loggers": {
         "root": {
-            "level": "NOTSET",
+            "level": "DEBUG",
             "handlers": [
                 "stderr",
                 "file"
