@@ -4,6 +4,8 @@ import logging
 from fastapi import FastAPI
 from app.api import router
 from logger.logger_config import setup_logging
+from fastapi.middleware.cors import CORSMiddleware
+
 
 API_PREFIX = ""
 
@@ -27,6 +29,21 @@ def get_application() -> FastAPI:
 
 
 app = get_application()
+
+origins = [
+    "http://localhost:8000",
+    "http://localhost:3000",
+    "http://localhost:4000",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 if __name__ == "__main__":
     setup_logging()
     logging.basicConfig(level="INFO")

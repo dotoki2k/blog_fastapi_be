@@ -60,7 +60,7 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
     if user is None:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Incorrect email or password",
+            detail="Incorrect username or password",
         )
 
     hashed_pass = user["password"]
